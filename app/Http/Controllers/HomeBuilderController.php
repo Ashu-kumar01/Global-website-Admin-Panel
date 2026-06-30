@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 
 class HomeBuilderController extends Controller
 {
-    private const MAX_SECTIONS = 10;
+    private const MAX_SECTIONS = 18;
 
     private function catalog(): array
     {

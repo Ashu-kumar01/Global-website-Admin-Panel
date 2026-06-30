@@ -168,6 +168,16 @@
                                     <div class="nav-link-wrap" onclick="setActive(this)"><span class="nav-label">Courses</span></div>
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ route('admin.admission-process') }}">
+                                    <div class="nav-link-wrap" onclick="setActive(this)"><span class="nav-label">Admission Process</span></div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.placement') }}">
+                                    <div class="nav-link-wrap" onclick="setActive(this)"><span class="nav-label">Placement</span></div>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 

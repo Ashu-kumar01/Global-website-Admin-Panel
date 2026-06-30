@@ -12,6 +12,16 @@
 
         return \Illuminate\Support\Facades\Route::has($link) ? route($link) : $link;
     };
+
+    $courseMeta = function ($card) {
+        $type = match ($card->course_type ?? null) {
+            'full_time' => 'Full Time',
+            'part_time' => 'Part Time',
+            default => null,
+        };
+
+        return collect([$type, $card->duration ?? null])->filter()->implode(' · ') ?: null;
+    };
 @endphp
 
 @if ($section->heading || $section->subheading || $cards->isNotEmpty() || $section->image)
@@ -31,19 +41,29 @@
         @if ($design === 'grid')
             <div class="cs-grid cs-grid-4">
                 @foreach ($cards as $card)
-                    <div class="cs-card cs-card-plain">
-                        @if ($card->badge)
-                            <span class="cs-badge">{{ $card->badge }}</span>
+                    <div class="cs-card cs-card-image" style="background-color:#ffffff;">
+                        @if ($card->image)
+                            <div class="cs-card-image-wrap">
+                                <img src="{{ Storage::url($card->image) }}" alt="{{ $card->heading }}">
+                            </div>
                         @endif
-                        @if ($card->heading)
-                            <h3 class="cs-card-heading">{{ $card->heading }}</h3>
-                        @endif
-                        @if ($card->subheading)
-                            <p class="cs-card-subheading">{{ $card->subheading }}</p>
-                        @endif
-                        @if ($card->explore_text)
-                            <a href="{{ $resolveLink($card->explore_link) }}" class="cs-card-cta">{{ $card->explore_text }}</a>
-                        @endif
+                        <div class="cs-card-body">
+                            @if ($card->badge)
+                                <span class="cs-badge">{{ $card->badge }}</span>
+                            @endif
+                            @if ($card->heading)
+                                <h3 class="cs-card-heading">{{ $card->heading }}</h3>
+                            @endif
+                            @if ($card->subheading)
+                                <p class="cs-card-subheading">{{ $card->subheading }}</p>
+                            @endif
+                            @if ($courseMeta($card))
+                                <p class="cs-card-meta">{{ $courseMeta($card) }}</p>
+                            @endif
+                            @if ($card->explore_text)
+                                <a href="{{ $resolveLink($card->explore_link) }}" class="cs-card-cta">{{ $card->explore_text }}</a>
+                            @endif
+                        </div>
                     </div>
                 @endforeach
             </div>
@@ -65,6 +85,9 @@
                             @endif
                             @if ($card->short_description)
                                 <p class="cs-program-card-desc">{{ $card->short_description }}</p>
+                            @endif
+                            @if ($courseMeta($card))
+                                <p class="cs-card-meta">{{ $courseMeta($card) }}</p>
                             @endif
                             @if ($card->explore_text)
                                 <a href="{{ $resolveLink($card->explore_link) }}" class="cs-card-cta">{{ $card->explore_text }}</a>
@@ -92,6 +115,9 @@
                                 @endif
                                 @if ($card->subheading)
                                     <p class="cs-card-subheading">{{ $card->subheading }}</p>
+                                @endif
+                                @if ($courseMeta($card))
+                                    <p class="cs-card-meta">{{ $courseMeta($card) }}</p>
                                 @endif
                                 @if ($card->explore_text)
                                     <a href="{{ $resolveLink($card->explore_link) }}" class="cs-card-cta">{{ $card->explore_text }}</a>
@@ -130,6 +156,7 @@
     .cs-badge { display: inline-block; align-self: flex-start; padding: 4px 12px; border-radius: 999px; background: rgba(37,99,235,.1); color: #2563eb; font-size: .72rem; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; margin-bottom: 12px; }
     .cs-card-heading { font-size: 1.1rem; font-weight: 700; margin: 0 0 8px; }
     .cs-card-subheading { font-size: .9rem; color: #6b7280; line-height: 1.55; margin: 0 0 16px; flex: 1; }
+    .cs-card-meta { font-size: .8rem; color: #2563eb; font-weight: 600; margin: -8px 0 16px; }
     .cs-card-cta { display: inline-flex; align-items: center; justify-content: center; align-self: flex-start; padding: 10px 22px; border-radius: 8px; background: #2563eb; color: #ffffff; font-size: .86rem; font-weight: 600; text-decoration: none; transition: background-color .25s ease; }
     .cs-card-cta:hover { background: #1e40af; }
 

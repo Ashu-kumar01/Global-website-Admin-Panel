@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\AboutSection;
+use App\Models\AdmissionProcessSection;
 use App\Models\CourseSection;
 use App\Models\LandingSection;
 use App\Models\Menu;
 use App\Models\MenuButton;
 use App\Models\MenuSetting;
+use App\Models\PlacementSection;
 use App\Models\Ribbion;
 use App\Models\SectionHeader;
 use Illuminate\Support\Facades\Auth;
@@ -105,6 +107,10 @@ class SitePreviewController extends Controller
 
         $courseSection = CourseSection::with('cards')->where('user_id', $userId)->first();
 
-        return view('admin.site-preview', compact('headerPreview', 'landingPreview', 'aboutPreview', 'ribbonPreview', 'sectionHeader', 'courseSection'));
+        $admissionProcessSection = AdmissionProcessSection::with('steps')->where('user_id', $userId)->first();
+
+        $placementSection = PlacementSection::with('logos')->where('user_id', $userId)->first();
+
+        return view('admin.site-preview', compact('headerPreview', 'landingPreview', 'aboutPreview', 'ribbonPreview', 'sectionHeader', 'courseSection', 'admissionProcessSection', 'placementSection'));
     }
 }

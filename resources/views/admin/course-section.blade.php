@@ -141,6 +141,9 @@
             document.getElementById('sectionImagePanel').style.display = design === 'image' ? '' : 'none';
 
             document.querySelectorAll('.card-image-block').forEach(el => {
+                el.style.display = (design === 'grid' || design === 'slider') ? '' : 'none';
+            });
+            document.querySelectorAll('.card-bgcolor-block').forEach(el => {
                 el.style.display = design === 'slider' ? '' : 'none';
             });
             document.querySelectorAll('.card-badge-block').forEach(el => {
@@ -162,14 +165,14 @@
                         <button type="button" class="btn-reset" onclick="removeCard('${uid}')"><i class="fas fa-trash"></i> Remove</button>
                     </div>
 
-                    <div class="card-image-block form-section" style="display:${design === 'slider' ? '' : 'none'};">
+                    <div class="card-image-block form-section" style="display:${(design === 'grid' || design === 'slider') ? '' : 'none'};">
                         <label class="field-label">Image</label>
                         <input type="file" class="form-field card-image-input" accept="image/*" onchange="previewImage(this, 'cardImgPreview-${uid}')">
                         <input type="hidden" class="card-image-existing" value="${escapeHtml(data.existing_image)}">
                         <img id="cardImgPreview-${uid}" src="${imageSrc}" style="display:${imageSrc ? '' : 'none'};margin-top:8px;max-height:100px;border-radius:6px;border:1px solid var(--grey-200);">
                     </div>
 
-                    <div class="card-image-block form-section" style="display:${design === 'slider' ? '' : 'none'};max-width:200px;">
+                    <div class="card-bgcolor-block form-section" style="display:${design === 'slider' ? '' : 'none'};max-width:200px;">
                         <label class="field-label">Card Background Color</label>
                         <input type="color" class="form-field card-bg-color" value="${data.background_color || '#ffffff'}" style="width:80px;height:40px;padding:4px;">
                     </div>
@@ -185,6 +188,20 @@
                     <div class="card-short-description-block form-section" style="display:${design === 'image' ? '' : 'none'};">
                         <label class="field-label">Short Description</label>
                         <textarea class="form-field card-short-description" rows="3" placeholder="Short description">${escapeHtml(data.short_description)}</textarea>
+                    </div>
+                    <div class="form-section" style="display:flex;gap:16px;flex-wrap:wrap;">
+                        <div style="flex:1;min-width:160px;">
+                            <label class="field-label">Course Type</label>
+                            <select class="form-field card-course-type">
+                                <option value="">— Select —</option>
+                                <option value="full_time" ${data.course_type === 'full_time' ? 'selected' : ''}>Full Time</option>
+                                <option value="part_time" ${data.course_type === 'part_time' ? 'selected' : ''}>Part Time</option>
+                            </select>
+                        </div>
+                        <div style="flex:1;min-width:160px;">
+                            <label class="field-label">Duration</label>
+                            <input type="text" class="form-field card-duration" placeholder="e.g. 6 Months" value="${escapeHtml(data.duration)}">
+                        </div>
                     </div>
                     <div class="card-badge-block form-section" style="display:${design === 'image' ? 'none' : ''};">
                         <label class="field-label">Program Badge</label>
@@ -247,6 +264,8 @@
                     heading: row.querySelector('.card-heading').value.trim(),
                     subheading: row.querySelector('.card-subheading').value.trim(),
                     short_description: row.querySelector('.card-short-description').value.trim(),
+                    course_type: row.querySelector('.card-course-type').value,
+                    duration: row.querySelector('.card-duration').value.trim(),
                     badge: row.querySelector('.card-badge').value.trim(),
                     explore_text: row.querySelector('.card-explore-text').value.trim(),
                     explore_link: row.querySelector('.card-explore-link').value.trim(),
@@ -255,7 +274,7 @@
                 });
 
                 const imageInput = row.querySelector('.card-image-input');
-                if (design === 'slider') {
+                if (design === 'grid' || design === 'slider') {
                     imageInput.name = `cards[${idx}][image]`;
                 } else {
                     imageInput.removeAttribute('name');

@@ -9,6 +9,8 @@ use App\Http\Controllers\LandingSectionController;
 use App\Http\Controllers\AboutSectionController;
 use App\Http\Controllers\WhyChooseUsController;
 use App\Http\Controllers\CourseSectionController;
+use App\Http\Controllers\AdmissionProcessController;
+use App\Http\Controllers\PlacementController;
 use App\Http\Controllers\HomeBuilderController;
 use App\Http\Controllers\SitePreviewController;
 use App\Http\Controllers\UserController;
@@ -49,6 +51,10 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::post('/why-choose-us', [WhyChooseUsController::class, 'store'])->name('admin.WhyChooseUs.store');
     Route::get('/courses', [CourseSectionController::class, 'index'])->name('admin.courses');
     Route::post('/courses', [CourseSectionController::class, 'store'])->name('admin.courses.store');
+    Route::get('/admission-process', [AdmissionProcessController::class, 'index'])->name('admin.admission-process');
+    Route::post('/admission-process', [AdmissionProcessController::class, 'store'])->name('admin.admission-process.store');
+    Route::get('/placement', [PlacementController::class, 'index'])->name('admin.placement');
+    Route::post('/placement', [PlacementController::class, 'store'])->name('admin.placement.store');
 
     Route::get('/home-builder', [HomeBuilderController::class, 'index'])->name('admin.home-builder');
     Route::post('/home-builder/selection', [HomeBuilderController::class, 'saveSelection'])->name('admin.home-builder.selection');

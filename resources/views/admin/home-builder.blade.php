@@ -380,7 +380,7 @@
                     const def = sectionDef(s.key);
                     return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--grey-200,#e5e7eb);">
                         <!--<span style="width:26px;height:26px;border-radius:6px;background:#eff6ff;color:#2563eb;display:flex;align-items:center;justify-content:center;font-size:.74rem;font-weight:700;">${s.priority}</span>-->
-                        <span style="font-size:.84rem;"><i class="fas ${def.icon}"></i> ${escapeHtml(def.label)}</span>
+                        <span style="font-size:.84rem;width: 100%;display: flex;align-items: center;gap: 0.5rem;"><i class="fas ${def.icon}" style="width:26px;height:26px;border-radius:6px;background:#eff6ff;color:#2563eb;display:flex;align-items:center;justify-content:center;font-size:.74rem;font-weight:700;"></i> ${escapeHtml(def.label)}</span>
                     </div>`;
                 }).join('') || '<p style="font-size:.82rem;color:var(--grey-500,#6b7280);">No sections selected yet.</p>';
                 return;

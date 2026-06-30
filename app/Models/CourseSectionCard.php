@@ -12,6 +12,8 @@ class CourseSectionCard extends Model
         'heading',
         'subheading',
         'short_description',
+        'course_type',
+        'duration',
         'badge',
         'explore_text',
         'explore_link',

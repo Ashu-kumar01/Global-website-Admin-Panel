@@ -205,6 +205,14 @@
     @if ($courseSection)
         @include('sections.course-section', ['section' => $courseSection])
     @endif
+
+    @if ($admissionProcessSection)
+        @include('sections.admission-process', ['section' => $admissionProcessSection])
+    @endif
+
+    @if ($placementSection)
+        @include('sections.placement', ['section' => $placementSection])
+    @endif
     <div id="previewRibbonBottom"></div>
 
     <script>

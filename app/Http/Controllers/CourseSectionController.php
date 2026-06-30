@@ -31,6 +31,8 @@ class CourseSectionController extends Controller
                     'heading' => $c->heading ?? '',
                     'subheading' => $c->subheading ?? '',
                     'short_description' => $c->short_description ?? '',
+                    'course_type' => $c->course_type ?? '',
+                    'duration' => $c->duration ?? '',
                     'badge' => $c->badge ?? '',
                     'explore_text' => $c->explore_text ?? '',
                     'explore_link' => $c->explore_link ?? '',
@@ -59,6 +61,8 @@ class CourseSectionController extends Controller
             'cards.*.heading' => 'nullable|string|max:255',
             'cards.*.subheading' => 'nullable|string|max:500',
             'cards.*.short_description' => 'nullable|string|max:1000',
+            'cards.*.course_type' => 'nullable|in:full_time,part_time',
+            'cards.*.duration' => 'nullable|string|max:100',
             'cards.*.badge' => 'nullable|string|max:100',
             'cards.*.explore_text' => 'nullable|string|max:100',
             'cards.*.explore_link' => 'nullable|string|max:255',
@@ -99,12 +103,15 @@ class CourseSectionController extends Controller
                     'heading' => $cardData['heading'] ?? null,
                     'subheading' => $cardData['subheading'] ?? null,
                     'short_description' => $cardData['short_description'] ?? null,
+                    'course_type' => ($cardData['course_type'] ?? null) ?: null,
+                    'duration' => $cardData['duration'] ?? null,
                     'badge' => $cardData['badge'] ?? null,
                     'explore_text' => $cardData['explore_text'] ?? null,
                     'explore_link' => $cardData['explore_link'] ?? null,
                     'background_color' => $cardData['background_color'] ?? null,
                     'image' => $cardImagePath,
                 ]);
+                
             }
         });
 

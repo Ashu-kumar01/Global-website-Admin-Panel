@@ -1,8 +1,10 @@
 <?php
 
 use App\Models\AboutSection;
+use App\Models\AdmissionProcessSection;
 use App\Models\CourseSection;
 use App\Models\LandingSection;
+use App\Models\PlacementSection;
 use App\Models\SectionHeader;
 
 /*
@@ -23,7 +25,7 @@ use App\Models\SectionHeader;
 |
 */
 
-return [ 
+return [
     'landing_section' => [
         'label' => 'Landing Section',
         'description' => 'Single screen, slider or scroll-reveal hero with heading and buttons.',
@@ -56,23 +58,21 @@ return [
         'model' => CourseSection::class,
         'admin_route' => 'admin.courses',
     ],
-    'programs' => [
-        'label' => 'Programs',
-        'description' => 'List academic programs offered.',
-        'icon' => 'fa-graduation-cap',
-        'type' => 'placeholder',
-    ],
     'admission_process' => [
         'label' => 'Admission Process',
         'description' => 'Step-by-step admission process timeline.',
         'icon' => 'fa-clipboard-check',
-        'type' => 'placeholder',
+        'type' => 'real',
+        'model' => AdmissionProcessSection::class,
+        'admin_route' => 'admin.admission-process',
     ],
     'placement' => [
         'label' => 'Placement',
-        'description' => 'Placement statistics and highlights.',
+        'description' => 'Placement statistics, recruiter logos (grid or marquee) and highlights.',
         'icon' => 'fa-briefcase',
-        'type' => 'placeholder',
+        'type' => 'real',
+        'model' => PlacementSection::class,
+        'admin_route' => 'admin.placement',
     ],
     'faculty' => [
         'label' => 'Faculty',
@@ -114,12 +114,6 @@ return [
         'label' => 'Statistics',
         'description' => 'Animated counters for key numbers.',
         'icon' => 'fa-chart-simple',
-        'type' => 'placeholder',
-    ],
-    'recruiters' => [
-        'label' => 'Recruiters',
-        'description' => 'Logos of recruiting companies / partners.',
-        'icon' => 'fa-building',
         'type' => 'placeholder',
     ],
     'video_section' => [
