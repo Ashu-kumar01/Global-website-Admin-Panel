@@ -149,8 +149,7 @@
                     <input type="file" class="form-field logo-image-input" accept="image/*" onchange="previewImage(this, 'logoImgPreview-${uid}')" style="margin-bottom:8px;">
                     <input type="hidden" class="logo-image-existing" value="${escapeHtml(data.existing_image)}">
                     <img id="logoImgPreview-${uid}" src="${imageSrc}" style="display:${imageSrc ? '' : 'none'};max-height:60px;max-width:100%;margin-bottom:8px;">
-                    <input type="text" class="form-field logo-company-name" placeholder="Company name" value="${escapeHtml(data.company_name)}" style="margin-bottom:8px;">
-                    <input type="text" class="form-field logo-link" placeholder="https://example.com (optional)" value="${escapeHtml(data.link)}">
+                    <input type="text" class="form-field logo-company-name" placeholder="Company name" value="${escapeHtml(data.company_name)}">
                 </div>
             `;
         }
@@ -181,7 +180,6 @@
             document.querySelectorAll('#logosContainer .logo-item').forEach((row, idx) => {
                 payload.logos.push({
                     company_name: row.querySelector('.logo-company-name').value.trim(),
-                    link: row.querySelector('.logo-link').value.trim(),
                     existing_image: row.querySelector('.logo-image-existing').value || null,
                 });
 

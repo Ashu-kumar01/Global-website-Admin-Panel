@@ -9,14 +9,6 @@
         ['label' => 'Average Package', 'value' => $section->average_package ?? null],
         ['label' => 'Total Recruiters', 'value' => $section->total_recruiters ?? null],
     ])->filter(fn ($s) => filled($s['value']));
-
-    $resolveLink = function (?string $link) {
-        if (! $link) {
-            return null;
-        }
-
-        return \Illuminate\Support\Facades\Route::has($link) ? route($link) : $link;
-    };
 @endphp
 
 @if ($section->heading || $section->subheading || $stats->isNotEmpty() || $logos->isNotEmpty())
@@ -54,13 +46,7 @@
                         @foreach ([1, 2] as $loop)
                             @foreach ($logos as $logo)
                                 <div class="pl-logo-item" title="{{ $logo->company_name }}">
-                                    @if ($resolveLink($logo->link))
-                                        <a href="{{ $resolveLink($logo->link) }}" target="_blank" rel="noopener">
-                                            <img src="{{ Storage::url($logo->image) }}" alt="{{ $logo->company_name ?: 'Recruiter logo' }}">
-                                        </a>
-                                    @else
-                                        <img src="{{ Storage::url($logo->image) }}" alt="{{ $logo->company_name ?: 'Recruiter logo' }}">
-                                    @endif
+                                    <img src="{{ Storage::url($logo->image) }}" alt="{{ $logo->company_name ?: 'Recruiter logo' }}">
                                 </div>
                             @endforeach
                         @endforeach
@@ -70,13 +56,7 @@
                 <div class="pl-logos">
                     @foreach ($logos as $logo)
                         <div class="pl-logo-item" title="{{ $logo->company_name }}">
-                            @if ($resolveLink($logo->link))
-                                <a href="{{ $resolveLink($logo->link) }}" target="_blank" rel="noopener">
-                                    <img src="{{ Storage::url($logo->image) }}" alt="{{ $logo->company_name ?: 'Recruiter logo' }}">
-                                </a>
-                            @else
-                                <img src="{{ Storage::url($logo->image) }}" alt="{{ $logo->company_name ?: 'Recruiter logo' }}">
-                            @endif
+                            <img src="{{ Storage::url($logo->image) }}" alt="{{ $logo->company_name ?: 'Recruiter logo' }}">
                         </div>
                     @endforeach
                 </div>

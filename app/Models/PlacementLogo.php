@@ -11,7 +11,6 @@ class PlacementLogo extends Model
         'order',
         'image',
         'company_name',
-        'link',
     ];
 
     public function section()

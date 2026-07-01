@@ -99,6 +99,11 @@ class User extends Authenticatable
         return $this->hasOne(Ribbion::class);
     }
 
+    public function ribbions()
+    {
+        return $this->hasMany(Ribbion::class)->orderBy('slot');
+    }
+
     public function landingSection()
     {
         return $this->hasOne(LandingSection::class);

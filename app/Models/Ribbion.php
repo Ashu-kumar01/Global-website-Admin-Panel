@@ -8,8 +8,13 @@ class Ribbion extends Model
 {
     protected $fillable = [
         'user_id',
+        'slot',
         'backgroundColor',
         'textColor',
+        'fontFamily',
+        'fontSize',
+        'fontWeight',
+        'ribbonHeight',
         'ribbonPosition',
         'position',
         'ribbonCloseBtnRadio',
@@ -21,6 +26,9 @@ class Ribbion extends Model
     protected $casts = [
         'ribbonCloseBtnRadio' => 'boolean',
         'status' => 'boolean',
+        'slot' => 'integer',
+        'fontSize' => 'integer',
+        'ribbonHeight' => 'integer',
     ];
 
     public function user()

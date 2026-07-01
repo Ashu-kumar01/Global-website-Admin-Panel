@@ -219,7 +219,7 @@
         const headerPreview = @json($headerPreview);
         const landingPreview = @json($landingPreview);
         const aboutPreview = @json($aboutPreview);
-        const ribbonPreview = @json($ribbonPreview);
+        const ribbonsPreview = @json($ribbonsPreview);
 
         function escapeHtml(str) {
             return (str || '').replace(/[&<>"']/g, c => ({
@@ -506,10 +506,10 @@
             `;
         }
 
-        // ── Highlight ribbon ──
+        // ── Highlight ribbons (up to 3, stacked at top and/or bottom) ──
 
-        function renderRibbonBarHtml() {
-            const notices = (ribbonPreview.notices && ribbonPreview.notices.length) ? ribbonPreview.notices : [{
+        function renderRibbonBarHtml(ribbon, index, offsetTop) {
+            const notices = (ribbon.notices && ribbon.notices.length) ? ribbon.notices : [{
                 text: 'Your highlight ribbon text will appear here', href: ''
             }];
             const gap = 100;
@@ -518,49 +518,83 @@
                     style="display:inline-block;color:inherit;text-decoration:${n.href ? 'underline' : 'none'};${i < notices.length - 1 ? `margin-right:${gap}px;` : ''}">${escapeHtml(n.text)}</a>
             `).join('');
 
-            const animationStyle = ribbonPreview.isSlide
-                ? `animation: ribbonSlide ${ribbonPreview.sliderSpeed || 10}s linear infinite;white-space:nowrap;`
+            const fontFamily = ribbon.fontFamily ? `font-family:${ribbon.fontFamily};` : '';
+            const fontSize = (ribbon.fontSize || 14) + 'px';
+            const fontWeight = ribbon.fontWeight || '600';
+            const minHeight = (ribbon.ribbonHeight || 44) + 'px';
+
+            const animationStyle = ribbon.isSlide
+                ? `animation: ribbonSlide ${ribbon.sliderSpeed || 10}s linear infinite;white-space:nowrap;`
                 : 'white-space:normal;';
 
-            const fixedStyle = ribbonPreview.cssPosition === 'fixed'
-                ? `position:fixed;${ribbonPreview.ribbonPosition === 'bottom' ? 'bottom:0;' : 'top:0;'}left:0;right:0;z-index:50;`
+            const stackSide = ribbon.ribbonPosition === 'bottom' ? `bottom:${offsetTop}px;` : `top:${offsetTop}px;`;
+            const fixedStyle = ribbon.cssPosition === 'fixed'
+                ? `position:fixed;${stackSide}left:0;right:0;z-index:${50 + index};`
                 : 'position:relative;';
 
             return `
-                <div id="ribbonBarEl" style="${fixedStyle}background:${ribbonPreview.backgroundColor};color:${ribbonPreview.textColor};padding:10px 16px;display:flex;align-items:center;gap:12px;overflow:hidden;">
+                <div class="ribbonBarEl" data-index="${index}" data-position="${ribbon.ribbonPosition}" data-fixed="${ribbon.cssPosition === 'fixed'}" style="${fixedStyle}min-height:${minHeight};box-sizing:border-box;background:${ribbon.backgroundColor};color:${ribbon.textColor};padding:10px 16px;display:flex;align-items:center;gap:12px;overflow:hidden;">
                     <div style="flex:1;overflow:hidden;">
-                        <span style="${animationStyle}display:inline-block;font-size:.86rem;font-weight:600;">${textSpans}</span>
+                        <span style="${animationStyle}${fontFamily}display:inline-block;font-size:${fontSize};font-weight:${fontWeight};">${textSpans}</span>
                     </div>
-                    ${ribbonPreview.showClose ? `<i class="fas fa-xmark" style="flex-shrink:0;cursor:pointer;" onclick="closeRibbon()"></i>` : ''}
+                    ${ribbon.showClose ? `<i class="fas fa-xmark" style="flex-shrink:0;cursor:pointer;" onclick="closeRibbon(this)"></i>` : ''}
                 </div>
             `;
         }
 
-        function closeRibbon() {
-            const el = document.getElementById('ribbonBarEl');
+        function restackRibbons(slot) {
+            const els = Array.from(slot.querySelectorAll('.ribbonBarEl'));
+            let offset = 0;
+            els.forEach(el => {
+                if (el.dataset.fixed === 'true') {
+                    el.style[el.dataset.position === 'bottom' ? 'bottom' : 'top'] = offset + 'px';
+                }
+                offset += el.offsetHeight;
+            });
+            return offset;
+        }
+
+        function closeRibbon(iconEl) {
+            const el = iconEl.closest('.ribbonBarEl');
             if (!el) return;
-            const wasFixed = ribbonPreview.cssPosition === 'fixed';
+            const position = el.dataset.position;
+            const wasFixed = el.dataset.fixed === 'true';
             el.remove();
-            if (wasFixed) document.body.style[ribbonPreview.ribbonPosition === 'bottom' ? 'paddingBottom' : 'paddingTop'] = '0';
+
+            const slot = document.getElementById(position === 'bottom' ? 'previewRibbonBottom' : 'previewRibbonTop');
+            const totalHeight = restackRibbons(slot);
+            if (wasFixed) {
+                document.body.style[position === 'bottom' ? 'paddingBottom' : 'paddingTop'] = totalHeight + 'px';
+            }
         }
 
         function renderRibbon() {
-            if (!ribbonPreview.enabled) return;
-
-            const html = renderRibbonBarHtml();
             const topSlot = document.getElementById('previewRibbonTop');
             const bottomSlot = document.getElementById('previewRibbonBottom');
 
-            if (ribbonPreview.ribbonPosition === 'bottom') {
-                bottomSlot.innerHTML = html;
-            } else {
-                topSlot.innerHTML = html;
-            }
+            const topRibbons = ribbonsPreview.filter(r => r.enabled && r.ribbonPosition !== 'bottom');
+            const bottomRibbons = ribbonsPreview.filter(r => r.enabled && r.ribbonPosition === 'bottom');
 
-            if (ribbonPreview.cssPosition === 'fixed') {
-                const height = document.getElementById('ribbonBarEl').offsetHeight;
-                document.body.style[ribbonPreview.ribbonPosition === 'bottom' ? 'paddingBottom' : 'paddingTop'] = height + 'px';
-            }
+            let topOffset = 0;
+            topSlot.innerHTML = topRibbons.map((r, i) => {
+                const html = renderRibbonBarHtml(r, i, topOffset);
+                if (r.cssPosition === 'fixed') topOffset += (r.ribbonHeight || 44);
+                return html;
+            }).join('');
+
+            let bottomOffset = 0;
+            bottomSlot.innerHTML = bottomRibbons.map((r, i) => {
+                const html = renderRibbonBarHtml(r, i, bottomOffset);
+                if (r.cssPosition === 'fixed') bottomOffset += (r.ribbonHeight || 44);
+                return html;
+            }).join('');
+
+            requestAnimationFrame(() => {
+                const topHeight = restackRibbons(topSlot);
+                const bottomHeight = restackRibbons(bottomSlot);
+                document.body.style.paddingTop = topRibbons.some(r => r.cssPosition === 'fixed') ? topHeight + 'px' : '0';
+                document.body.style.paddingBottom = bottomRibbons.some(r => r.cssPosition === 'fixed') ? bottomHeight + 'px' : '0';
+            });
         }
 
         document.getElementById('previewHeaderNav').innerHTML = renderHeaderNav();

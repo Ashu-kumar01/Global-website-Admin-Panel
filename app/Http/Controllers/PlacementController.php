@@ -30,7 +30,6 @@ class PlacementController extends Controller
             'logos' => $section
                 ? $section->logos->map(fn ($l) => [
                     'company_name' => $l->company_name ?? '',
-                    'link' => $l->link ?? '',
                     'image' => $l->image ? Storage::url($l->image) : null,
                     'existing_image' => $l->image,
                 ])->values()
@@ -55,7 +54,6 @@ class PlacementController extends Controller
 
             'logos' => 'array',
             'logos.*.company_name' => 'nullable|string|max:150',
-            'logos.*.link' => 'nullable|string|max:255',
             'logos.*.existing_image' => 'nullable|string',
         ])->validate();
 
@@ -87,7 +85,6 @@ class PlacementController extends Controller
                     'placement_section_id' => $section->id,
                     'order' => $logoIndex,
                     'company_name' => $logoData['company_name'] ?? null,
-                    'link' => $logoData['link'] ?? null,
                     'image' => $logoImagePath,
                 ]);
             }

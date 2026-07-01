@@ -88,20 +88,22 @@ class SitePreviewController extends Controller
             'image' => $aboutSection?->image1 ? Storage::url($aboutSection->image1) : null,
         ];
 
-        $ribbon = Ribbion::with('notices')->where('user_id', $userId)->first();
-        $ribbonPreview = [
-            'enabled' => (bool) ($ribbon?->status ?? false),
-            'backgroundColor' => $ribbon?->backgroundColor ?? '#2563eb',
-            'textColor' => $ribbon?->textColor ?? '#ffffff',
-            'ribbonPosition' => $ribbon?->ribbonPosition ?? 'top',
-            'cssPosition' => $ribbon?->position ?? 'fixed',
-            'showClose' => $ribbon ? (bool) $ribbon->ribbonCloseBtnRadio : true,
-            'isSlide' => ($ribbon?->ribbonAnimation ?? 'no') === 'yes',
-            'sliderSpeed' => $ribbon?->sliderSpeed ?? 10,
-            'notices' => $ribbon
-                ? $ribbon->notices->map(fn ($n) => ['text' => $n->name, 'href' => $n->anchor_href])->values()
-                : [],
-        ];
+        $ribbons = Ribbion::with('notices')->where('user_id', $userId)->orderBy('slot')->get();
+        $ribbonsPreview = $ribbons->map(fn ($ribbon) => [
+            'enabled' => (bool) $ribbon->status,
+            'backgroundColor' => $ribbon->backgroundColor ?? '#2563eb',
+            'textColor' => $ribbon->textColor ?? '#ffffff',
+            'fontFamily' => $ribbon->fontFamily ?? '',
+            'fontSize' => $ribbon->fontSize ?? 14,
+            'fontWeight' => $ribbon->fontWeight ?? '600',
+            'ribbonHeight' => $ribbon->ribbonHeight ?? 44,
+            'ribbonPosition' => $ribbon->ribbonPosition ?? 'top',
+            'cssPosition' => $ribbon->position ?? 'fixed',
+            'showClose' => (bool) $ribbon->ribbonCloseBtnRadio,
+            'isSlide' => ($ribbon->ribbonAnimation ?? 'no') === 'yes',
+            'sliderSpeed' => $ribbon->sliderSpeed ?? 10,
+            'notices' => $ribbon->notices->map(fn ($n) => ['text' => $n->name, 'href' => $n->anchor_href])->values(),
+        ])->values();
 
         $sectionHeader = SectionHeader::with('cards')->where('user_id', $userId)->first();
 
@@ -111,6 +113,6 @@ class SitePreviewController extends Controller
 
         $placementSection = PlacementSection::with('logos')->where('user_id', $userId)->first();
 
-        return view('admin.site-preview', compact('headerPreview', 'landingPreview', 'aboutPreview', 'ribbonPreview', 'sectionHeader', 'courseSection', 'admissionProcessSection', 'placementSection'));
+        return view('admin.site-preview', compact('headerPreview', 'landingPreview', 'aboutPreview', 'ribbonsPreview', 'sectionHeader', 'courseSection', 'admissionProcessSection', 'placementSection'));
     }
 }
